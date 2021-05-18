@@ -200,6 +200,7 @@ sub lmsens_update {
 	my $rrd = $config->{base_lib} . $package . ".rrd";
 	my $lmsens = $config->{lmsens};
 
+	my $sensors_cmd = $lmsens->{sensors_cmd} || "sensors";    
 	my @mb = (0) x 2;
 	my @cpu = (0) x 4;
 	my @fan = (0) x 9;
@@ -214,11 +215,11 @@ sub lmsens_update {
 	if($config->{os} eq "Linux") {
 		if($lmsens->{list}) {
 			my @data;
-	  		if(open(IN, "sensors |")) {
+	  		if(open(IN, "${sensors_cmd} |")) {
 				@data = <IN>;
 				close(IN);
 			} else {
-				logger("$myself: WARNING: unable to execute 'sensors' command.");
+				logger("$myself: WARNING: unable to execute '${sensors_cmd}' command.");
 			}
 			my $str;
 			for($l = 0; $l < scalar(@data); $l++) {
